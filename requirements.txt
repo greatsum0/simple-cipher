@@ -1,0 +1,4 @@
+# pip install -r requirements.txt
+
+# Base ----------------------------------------
+numpy>=1.21.2
