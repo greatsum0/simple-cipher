@@ -1,3 +1,4 @@
+import string
 import numpy as np
 import re
 import math
@@ -8,6 +9,7 @@ class Cipher:
     def __init__(self, key, conversion_table):
         self.key = self._preprocess_text(key)
         self.conversion_table = np.array(conversion_table)
+        self.idx_table = np.array(list(string.ascii_uppercase))
 
     def encrypt(self, plain_text):
         return self._encrypt_second_phase(self._encrypt_first_phase(plain_text))[0]
@@ -31,7 +33,8 @@ class Cipher:
         cipher = []
 
         for i in range(len(plain_text)):
-            idx_table= self.conversion_table[:,:1]
+            idx_table= self.idx_table.reshape(-1,1)#conversion_table[:,:1]
+
             key_idx, _ = np.where(idx_table == self.extended_key[i])
             plain_text_idx, _ = np.where(idx_table == plain_text[i])
             cipher.append(self.conversion_table[key_idx,plain_text_idx][0])
@@ -53,11 +56,12 @@ class Cipher:
 
     def _decrypt_second_phase(self, cipher_text):
         plain_text = []
-        idx_table= self.conversion_table[:1,:][0]   
+        idx_table= self.idx_table#conversion_table[:1,:][0]   
         self.extended_key = self._extend_key(cipher_text)
         for i in range(len(cipher_text)):
             key_idx= np.where(idx_table == self.extended_key[i])[0][0]
             decipher_row = self.conversion_table[key_idx,:]
             plain_text_idx = np.where(decipher_row == cipher_text[i])[0][0]
             plain_text.append(idx_table[plain_text_idx])
+
         return "".join(plain_text)
