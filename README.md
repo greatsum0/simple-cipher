@@ -15,6 +15,8 @@ git clone https://github.com/oguzkaganaltas/simple-cipher.git
 
 ## Usage
 
+table.txt must be in the same working directory!!
+
 ```bash
 python main.py
 ```
